@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Assistance AI Bot</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        #queryType, #queryContent, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        #queryType {
+            padding: 10px;
+        }
+
+        #queryContent {
+            padding: 10px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e7f0fc;
+            border-left: 5px solid #007BFF;
+            border-radius: 5px;
+        }
+
+        #error {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fdecea;
+            border-left: 5px solid #f8b4b9;
+            border-radius: 5px;
+            color: #a94442;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            #queryContent {
+                height: 100px;
+            }
+
+            button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Programming Assistance AI Bot</h1>
+    </header>
+    <main>
+        <form id="queryForm" onsubmit="event.preventDefault(); submitQuery();">
+            <label for="queryType">Select Query Type:</label>
+            <select id="queryType" required>
+                <option value="query_assistance">Query Assistance</option>
+                <option value="algorithm_help">Algorithm Help</option>
+                <option value="debugging">Debugging</option>
+                <option value="optimization">Optimization</option>
+                <option value="practice_problems">Practice Problems</option>
+            </select>
+            
+            <label for="queryContent">Enter Your Query:</label>
+            <textarea id="queryContent" rows="5" placeholder="Type your query here..." required></textarea>
+            
+            <button type="submit">Submit</button>
+            <button type="reset" style="background-color: #dc3545; margin-top: -10px;">Clear</button>
+        </form>
+        <div id="response" hidden></div>
+        <div id="error" hidden></div>
+    </main>
+    <footer>
+        &copy; 2025 Programming Assistance AI Bot. All rights reserved.
+    </footer>
+    <script>
+        function submitQuery() {
+            const queryType = document.getElementById('queryType').value;
+            const queryContent = document.getElementById('queryContent').value;
+            const responseElement = document.getElementById('response');
+            const errorElement = document.getElementById('error');
+            
+            responseElement.hidden = false;
+            responseElement.innerText = 'Processing your query...';
+            errorElement.hidden = true;
+
+            axios.post('/query', {
+                type: queryType,
+                content: queryContent
+            })
+            .then(function (response) {
+                responseElement.innerText = response.data.response;
+                responseElement.style.display = 'block';
+            })
+            .catch(function (error) {
+                errorElement.hidden = false;
+                errorElement.innerText = 'An error occurred: ' + (error.response ? error.response.data : error.message);
+                responseElement.hidden = true;
+            });
+        }
+    </script>
+</body>
+</html>
